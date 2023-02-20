@@ -62,7 +62,6 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
       });
 
       const { id, url } = data.data;
-
       await api.post("/database/create", {
         data: {
           title: form.title,
@@ -160,7 +159,7 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
           >
             Enviar
             {load && (
-              <div className="h-4 w-4 rounded-full border-4 border-r-slate-500 border-t-slate-500 animate-spin" />
+              <div className="h-4 w-4 rounded-full border-[3px] bg-transparent border-white  border-r-slate-500 border-t-slate-500 animate-spin" />
             )}
           </button>
         </form>
