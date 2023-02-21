@@ -8,6 +8,7 @@ import axios from "axios";
 import { Input } from "../Input";
 import { ImgbbModel } from "../../domain/Imgbb";
 import { api } from "../../services/api";
+import { Spin } from "../Spin";
 
 interface Props {
   visible: boolean;
@@ -61,23 +62,20 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
         },
       });
 
-      const { id, url } = data.data;
-      await api.post("/database/create", {
+      const { url } = data.data;
+      const res = await api.post("/database/create", {
         data: {
           title: form.title,
           description: form.description,
-          id,
           url,
         },
       });
-
+    } catch (error) {
+      console.error(error);
+    } finally {
       setUploadFile(undefined);
       setLoad(false);
       setVisible(() => false);
-    } catch (error) {
-      setUploadFile(undefined);
-      setLoad(false);
-      console.error(error);
     }
   }
 
@@ -158,9 +156,7 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
             disabled={load}
           >
             Enviar
-            {load && (
-              <div className="h-4 w-4 rounded-full border-[3px] bg-transparent border-white  border-r-slate-500 border-t-slate-500 animate-spin" />
-            )}
+            {load && <Spin />}
           </button>
         </form>
       </div>

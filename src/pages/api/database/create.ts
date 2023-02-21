@@ -15,7 +15,6 @@ export default async function handler(
       const response = await faunaClient.query(
         q.Create(q.Collection("images"), {
           data: {
-            id: model.id,
             title: model.title,
             description: model.description,
             url: model.url,
@@ -23,9 +22,8 @@ export default async function handler(
         })
       );
 
-      return res.status(201).json({ data: JSON.stringify(response) });
+      return res.status(201).send({ data: response });
     } catch (err) {
-      console.error(err);
       return res.status(500);
     }
   } else {
