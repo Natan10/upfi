@@ -11,7 +11,11 @@ import { UploadModal } from "../components/UploadModal";
 import { ApiResponseDTO } from "../dto/apiResponseDTO";
 import { api } from "../services/api";
 
-async function getPhotos({ pageParam }): Promise<ApiResponseDTO> {
+async function getPhotos({
+  pageParam = undefined,
+}: {
+  pageParam?: string;
+}): Promise<ApiResponseDTO> {
   const { data } = await api.get<ApiResponseDTO>("/database/list", {
     params: {
       after: pageParam,
@@ -55,7 +59,7 @@ const Home: NextPage = ({ payload }: any) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const data = await getPhotos({ pageParam: null });
+  const data = await getPhotos({});
 
   const payload: InfiniteData<ApiResponseDTO> = {
     pageParams: [null],
