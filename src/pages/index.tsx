@@ -1,6 +1,6 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
-import { useInfiniteQuery } from "react-query";
+import { InfiniteData, useInfiniteQuery } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 import { ButtonLoad } from "../components/ButtonLoad";
@@ -20,7 +20,7 @@ async function getPhotos({ pageParam }): Promise<ApiResponseDTO> {
   return data;
 }
 
-const Home: NextPage = () => {
+const Home: NextPage = ({ payload }: any) => {
   const [after, setAfter] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery(
@@ -28,6 +28,7 @@ const Home: NextPage = () => {
     getPhotos,
     {
       refetchOnWindowFocus: false,
+      initialData: payload,
       onSuccess: (data) => {
         const afterParam = data.pages.reverse()[0].after;
         setAfter(afterParam);
@@ -51,6 +52,21 @@ const Home: NextPage = () => {
       <ReactQueryDevtools position="bottom-right" />
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const data = await getPhotos({ pageParam: null });
+
+  const payload: InfiniteData<ApiResponseDTO> = {
+    pageParams: [null],
+    pages: [data],
+  };
+
+  return {
+    props: {
+      payload,
+    },
+  };
 };
 
 export default Home;

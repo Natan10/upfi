@@ -9,7 +9,12 @@ interface Props {
 }
 
 export const Header = ({ triggerUploadPhoto }: Props) => {
-  const [width, setWidth] = useState(0);
+  const [width, setWidth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth;
+    }
+    return 0;
+  });
 
   useEffect(() => {
     const setResizeWidth = (e: any) => {
@@ -29,7 +34,7 @@ export const Header = ({ triggerUploadPhoto }: Props) => {
           className="px-4 py-[10px] text-white text-md bg-orange hover:bg-orange/90 transition-colors font-bold rounded-[6px]"
           onClick={triggerUploadPhoto}
         >
-          {width > 475 ? (
+          {width && width! > 475 ? (
             "Adicionar Imagem"
           ) : (
             <AiOutlineCloudUpload size={20} />
