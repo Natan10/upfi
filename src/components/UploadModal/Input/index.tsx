@@ -11,7 +11,7 @@ export const Input = ({ errorForm, name, register, ...rest }: Props) => {
   return (
     <div className="mb-4 w-full">
       <input
-        className="px-7 py-3 w-full outline-none text-white bg-secondary/80 rounded-[6px]"
+        className="px-7 py-3 w-full outline-none text-white text-sm md:text-lg bg-secondary/80 rounded-[6px]"
         {...register(name)}
         {...rest}
       />

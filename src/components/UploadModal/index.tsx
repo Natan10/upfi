@@ -79,10 +79,12 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
   }, [reset, visible]);
 
   return visible ? (
-    <div className="fixed inset-0 flex justify-center items-center bg-black/50">
+    <div className="fixed inset-0 px-10 flex justify-center items-center bg-black/50">
       <div className="w-full max-w-3xl px-6 py-4 pb-6 bg-main flex flex-col">
         <div className="relative flex justify-between items-center">
-          <h1 className="text-white font-medium text-[36px]">Nova imagem</h1>
+          <h1 className="text-white font-medium text-lg md:text-[36px]">
+            Nova imagem
+          </h1>
           <button
             className="absolute -right-1 -top-1 text-sm text-white"
             onClick={() => setVisible(false)}
@@ -104,18 +106,18 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
           />
           <Input
             name="title"
-            placeholder="Titulo..."
+            placeholder="Titulo"
             register={register}
             errorForm={errors?.title && (errors.title.message as string)}
           />
           <Input
             name="description"
-            placeholder="Descricao..."
+            placeholder="Descricao"
             register={register}
           />
           <button
             aria-label="adicionar imagem"
-            className="px-4 py-[10px] w-full flex items-center justify-center gap-2 text-white text-md bg-orange disabled:bg-orange/80 hover:bg-orange/90 transition-colors font-bold rounded-[6px]"
+            className="px-4 py-2 md:py-[10px] w-full flex items-center justify-center gap-2 text-white text-sm md:text-md bg-orange disabled:bg-orange/80 hover:bg-orange/90 transition-colors font-bold rounded-[6px]"
             type="submit"
             disabled={load}
           >

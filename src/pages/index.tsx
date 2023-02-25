@@ -46,7 +46,7 @@ const Home: NextPage = () => {
             cb={() => fetchNextPage({ pageParam: after })}
           />
         )}
-        {/* <UploadModal visible={visible} setVisible={setVisible} /> */}
+        <UploadModal visible={visible} setVisible={setVisible} />
       </div>
       <ReactQueryDevtools position="bottom-right" />
     </div>
