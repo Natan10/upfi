@@ -57,19 +57,19 @@ const Home: NextPage = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const data = await getPhotos({});
+export const getServerSideProps: GetServerSideProps = async () => {
+  const data = await getPhotos({});
 
-//   const payload: InfiniteData<ApiResponseDTO> = {
-//     pageParams: [null],
-//     pages: [data],
-//   };
+  const payload: InfiniteData<ApiResponseDTO> = {
+    pageParams: [null],
+    pages: [data],
+  };
 
-//   return {
-//     props: {
-//       payload,
-//     },
-//   };
-// };
+  return {
+    props: {
+      payload,
+    },
+  };
+};
 
 export default Home;
