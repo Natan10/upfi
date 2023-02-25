@@ -1,29 +1,37 @@
 import { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axios from "axios";
+import { toast } from "react-toastify";
 
 import { Input } from "./Input";
 import { Spin } from "../Spin";
 import { PhotoUploader } from "./PhotoUploader";
-import { api } from "../../services/api";
 
-import { ImgbbModel } from "../../domain/Imgbb";
 import { schemaValidation } from "./schemaValidation";
+import { createImgbbPhoto } from "./functions/createImgbbPhoto";
+import {
+  createPhotoOnFauna,
+  CreatePhotoParams,
+} from "./functions/createPhotoOnFauna";
 
 interface Props {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-type FormSchema = z.infer<typeof schemaValidation>;
-
-const baseUrl = process.env.NEXT_PUBLIC_IMGBB_URL;
-const key = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+export type FormSchema = z.infer<typeof schemaValidation>;
 
 export const UploadModal = ({ visible, setVisible }: Props) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async ({ title, description, url }: CreatePhotoParams) =>
+      createPhotoOnFauna({ title, description, url }),
+    onSuccess: () => queryClient.invalidateQueries(["photos"]),
+  });
+
   const [load, setLoad] = useState(false);
   const {
     register,
@@ -37,35 +45,21 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
   });
   const photoField = watch("photo", []);
 
-  async function transformImageToBinary(file: File) {
-    const buffer = await file.arrayBuffer();
-    const blob = new Blob([new Uint8Array(buffer)]);
-    return blob;
-  }
-
   async function onSubmit(form: FormSchema) {
     setLoad(true);
     try {
-      const [formFile] = form.photo;
-      const file = await transformImageToBinary(formFile);
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const { data } = await axios.post<ImgbbModel>(baseUrl || "", formData, {
-        params: {
-          key,
-        },
-      });
+      const { data } = await createImgbbPhoto(form);
       const { url } = data.data;
-      await api.post("/database/create", {
-        data: {
-          title: form.title,
-          description: form.description,
-          url,
-        },
+      mutation.mutate({
+        title: form.title,
+        description: form.description,
+        url,
       });
+
+      toast.success("Foto carregata com sucesso");
     } catch (error) {
       console.error(error);
+      toast.error("Erro ao realizar upload, Tente novamente");
     } finally {
       setLoad(false);
       setVisible(false);

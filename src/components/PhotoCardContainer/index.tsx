@@ -15,7 +15,7 @@ export const PhotoCardContainer = ({ data }: Props) => {
       });
     })
     .flatMap((photo) => photo)
-    .reverse();
+    .sort((a, b) => a.ts - b.ts);
 
   return (
     <div className="mt-20">

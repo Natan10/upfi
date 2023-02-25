@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import { useState } from "react";
 
@@ -16,9 +17,9 @@ export const PhotoCard = ({ data }: Props) => {
 
   return (
     <>
-      <div className="mb-10 w-[293px] h-[290px] bg-secondary/80 rounded-[6px]">
+      <div className="mb-10 flex flex-col justify-between w-[293px] h-[290px] bg-secondary/80 rounded-[6px]">
         <div
-          className="w-full h-48 relative z-0"
+          className="w-full h-48 relative"
           role="button"
           aria-label="image preview"
           onClick={() => setShowPreview((old) => !old)}
@@ -29,15 +30,15 @@ export const PhotoCard = ({ data }: Props) => {
             fill
             sizes="100%"
             style={{
-              objectFit: "contain",
+              objectFit: "cover",
             }}
             quality={60}
             priority
           />
         </div>
-        <div className="px-6 py-5">
-          <span className="font-bold text-white text-2xl">{data.title}</span>
-          <p className="text-white text-lg font-light">
+        <div className="px-6 py-5 bg-main/50">
+          <span className="font-bold text-zinc-300 text-xl">{data.title}</span>
+          <p className="text-zinc-400 text-sm font-light">
             {data.description || "-"}
           </p>
         </div>
@@ -48,17 +49,14 @@ export const PhotoCard = ({ data }: Props) => {
           className="z-20 fixed inset-0 flex justify-center items-center bg-black/50"
           onClick={() => setShowPreview(false)}
         >
-          <div className="z-10 w-full h-full max-h-[500px] max-w-lg relative flex flex-col items-center rounded">
-            <Image
+          <div className="flex flex-col items-center rounded">
+            <img
               src={data.url}
-              alt="preview photo"
-              fill
-              style={{
-                objectFit: "contain",
-              }}
+              alt="preview"
+              className="max-w-[900px] max-h-[600px] object-contain"
             />
             <a
-              className="mt-1 absolute -bottom-4 px-2 py-1 w-full bg-zinc-700 text-white text-xs font-semibold rounded-b"
+              className="px-2 py-1 w-full bg-zinc-700 text-white text-xs font-semibold rounded-b"
               href={data.url}
               target="_blank"
               rel="noreferrer"
