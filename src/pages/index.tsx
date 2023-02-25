@@ -24,7 +24,7 @@ async function getPhotos({
   return data;
 }
 
-const Home: NextPage = ({ payload }: any) => {
+const Home: NextPage = () => {
   const [after, setAfter] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
   const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery(
@@ -32,7 +32,6 @@ const Home: NextPage = ({ payload }: any) => {
     getPhotos,
     {
       refetchOnWindowFocus: false,
-      initialData: payload,
       onSuccess: (data) => {
         const afterParam = data.pages.reverse()[0].after;
         setAfter(afterParam);
@@ -58,19 +57,19 @@ const Home: NextPage = ({ payload }: any) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const data = await getPhotos({});
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const data = await getPhotos({});
 
-  const payload: InfiniteData<ApiResponseDTO> = {
-    pageParams: [null],
-    pages: [data],
-  };
+//   const payload: InfiniteData<ApiResponseDTO> = {
+//     pageParams: [null],
+//     pages: [data],
+//   };
 
-  return {
-    props: {
-      payload,
-    },
-  };
-};
+//   return {
+//     props: {
+//       payload,
+//     },
+//   };
+// };
 
 export default Home;
