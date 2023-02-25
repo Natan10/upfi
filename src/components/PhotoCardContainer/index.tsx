@@ -18,8 +18,8 @@ export const PhotoCardContainer = ({ data }: Props) => {
     .sort((a, b) => a.ts - b.ts);
 
   return (
-    <div className="mt-20">
-      <div className="grid grid-cols-3 grid-flow-row-dense">
+    <div className="mt-12 lg:mt-20">
+      <div className="flex justify-around items-center flex-wrap">
         {photos.map((photo) => {
           return <PhotoCard key={photo.id} {...photo} />;
         })}

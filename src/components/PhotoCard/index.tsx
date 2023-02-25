@@ -17,7 +17,12 @@ export const PhotoCard = ({ data }: Props) => {
 
   return (
     <>
-      <div className="mb-10 flex flex-col justify-between w-[293px] h-[290px] bg-secondary/80 rounded-[6px]">
+      <div
+        className={`mb-10 flex flex-col justify-between 
+        w-60 h-60 lg:w-[293px] lg:h-[290px]
+        bg-secondary/80 rounded-[6px]
+      `}
+      >
         <div
           className="w-full h-48 relative"
           role="button"
@@ -30,7 +35,7 @@ export const PhotoCard = ({ data }: Props) => {
             fill
             sizes="100%"
             style={{
-              objectFit: "cover",
+              objectFit: "contain",
             }}
             quality={60}
             priority
@@ -53,7 +58,7 @@ export const PhotoCard = ({ data }: Props) => {
             <img
               src={data.url}
               alt="preview"
-              className="max-w-[900px] max-h-[600px] object-contain"
+              className="max-w-[350px] max-h-[250px] lg:max-w-[900px] lg:max-h-[600px] object-contain"
             />
             <a
               className="px-2 py-1 w-full bg-zinc-700 text-white text-xs font-semibold rounded-b"

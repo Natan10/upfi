@@ -29,7 +29,7 @@ export const Header = ({ triggerUploadPhoto }: Props) => {
           className="px-4 py-[10px] text-white text-md bg-orange hover:bg-orange/90 transition-colors font-bold rounded-[6px]"
           onClick={triggerUploadPhoto}
         >
-          {width > 400 ? (
+          {width > 475 ? (
             "Adicionar Imagem"
           ) : (
             <AiOutlineCloudUpload size={20} />
