@@ -1,43 +1,41 @@
 import { useEffect, useState } from "react";
-import { AiOutlineClose, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
 
-import { Input } from "../Input";
-import { ImgbbModel } from "../../domain/Imgbb";
-import { api } from "../../services/api";
+import { Input } from "./Input";
 import { Spin } from "../Spin";
+import { PhotoUploader } from "./PhotoUploader";
+import { api } from "../../services/api";
+
+import { ImgbbModel } from "../../domain/Imgbb";
+import { schemaValidation } from "./schemaValidation";
 
 interface Props {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const schema = z.object({
-  title: z
-    .string({ required_error: "Titulo obrigatorio" })
-    .min(1, { message: "Titulo obrigatorio" }),
-  description: z.string().optional(),
-});
-
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof schemaValidation>;
 
 const baseUrl = process.env.NEXT_PUBLIC_IMGBB_URL;
 const key = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
 
 export const UploadModal = ({ visible, setVisible }: Props) => {
   const [load, setLoad] = useState(false);
-  const [uploadFile, setUploadFile] = useState<File>();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitSuccessful },
     reset,
+    watch,
+    setValue,
   } = useForm<FormSchema>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schemaValidation),
   });
+  const photoField = watch("photo", []);
 
   async function transformImageToBinary(file: File) {
     const buffer = await file.arrayBuffer();
@@ -46,13 +44,10 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
   }
 
   async function onSubmit(form: FormSchema) {
-    if (!uploadFile) {
-      alert("Realize o upload do arquivo!");
-      return;
-    }
     setLoad(true);
     try {
-      const file = await transformImageToBinary(uploadFile!);
+      const [formFile] = form.photo;
+      const file = await transformImageToBinary(formFile);
       const formData = new FormData();
       formData.append("image", file);
 
@@ -61,9 +56,8 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
           key,
         },
       });
-
       const { url } = data.data;
-      const res = await api.post("/database/create", {
+      await api.post("/database/create", {
         data: {
           title: form.title,
           description: form.description,
@@ -73,27 +67,20 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setUploadFile(undefined);
       setLoad(false);
-      setVisible(() => false);
+      setVisible(false);
     }
-  }
-
-  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    setUploadFile(file);
   }
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      reset({ title: "", description: "" });
+      reset({ title: "", description: "", photo: undefined });
     }
   }, [isSubmitSuccessful, reset]);
 
   useEffect(() => {
     return () => {
-      reset({ title: "", description: "" });
-      setUploadFile(undefined);
+      reset({ title: "", description: "", photo: undefined });
     };
   }, [reset, visible]);
 
@@ -114,39 +101,22 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
           className="mt-6 mx-auto w-full max-w-lg flex flex-col items-center"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div
-            className={`mb-5 w-[120px] h-[120px] flex flex-col justify-center items-center rounded-[6px] text-white/50 bg-secondary/80 ${
-              uploadFile ? "border-green-600 border" : ""
-            }`}
-          >
-            <label
-              htmlFor="fileInput"
-              className="flex flex-col items-center justify-center text-center"
-            >
-              <AiOutlinePlus size={24} />
-              Adiciona sua Imagem
-              <input
-                onChange={handleFile}
-                id="fileInput"
-                type="file"
-                className="hidden"
-              />
-            </label>
-          </div>
-          {uploadFile && (
-            <span className="mb-3 text-white text-xs font-light">
-              {uploadFile.name}
-            </span>
-          )}
+          <PhotoUploader
+            name="photo"
+            photoField={photoField}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
           <Input
             name="title"
-            placeholder="Titulo da imagem..."
+            placeholder="Titulo..."
             register={register}
             errorForm={errors?.title && (errors.title.message as string)}
           />
           <Input
             name="description"
-            placeholder="Description da imagem..."
+            placeholder="Descricao..."
             register={register}
           />
           <button

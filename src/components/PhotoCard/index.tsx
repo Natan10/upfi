@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import cardPhoto from "../../assets/card_foto.svg";
-
 interface Props {
   id: string;
   ts: number;
@@ -50,16 +48,17 @@ export const PhotoCard = ({ data }: Props) => {
           className="z-20 fixed inset-0 flex justify-center items-center bg-black/50"
           onClick={() => setShowPreview(false)}
         >
-          <div className="z-10 relative flex flex-col rounded">
+          <div className="z-10 w-full h-full max-h-[500px] max-w-lg relative flex flex-col items-center rounded">
             <Image
               src={data.url}
               alt="preview photo"
-              width={500}
-              height={500}
-              priority
+              fill
+              style={{
+                objectFit: "contain",
+              }}
             />
             <a
-              className="px-2 py-1 w-full bg-zinc-700 text-white text-xs font-semibold rounded-b"
+              className="mt-1 absolute -bottom-4 px-2 py-1 w-full bg-zinc-700 text-white text-xs font-semibold rounded-b"
               href={data.url}
               target="_blank"
               rel="noreferrer"

@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useInfiniteQuery } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 import { ButtonLoad } from "../components/ButtonLoad";
 import { Header } from "../components/Header";
@@ -22,14 +23,17 @@ async function getPhotos({ pageParam }): Promise<ApiResponseDTO> {
 const Home: NextPage = () => {
   const [after, setAfter] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
-  const { data, error, fetchNextPage, isFetching, isLoading } =
-    useInfiniteQuery("photos", getPhotos, {
+  const { data, fetchNextPage, isFetching, isLoading } = useInfiniteQuery(
+    ["photos"],
+    getPhotos,
+    {
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
         const afterParam = data.pages.reverse()[0].after;
         setAfter(afterParam);
       },
-    });
+    }
+  );
 
   return (
     <div className="w-full min-h-screen bg-main pb-20">
@@ -44,6 +48,7 @@ const Home: NextPage = () => {
         )}
         <UploadModal visible={visible} setVisible={setVisible} />
       </div>
+      <ReactQueryDevtools position="bottom-right" />
     </div>
   );
 };
