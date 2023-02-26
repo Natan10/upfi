@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "react-toastify";
-
 import { Input } from "./Input";
 import { Spin } from "../Spin";
 import { PhotoUploader } from "./PhotoUploader";
@@ -16,6 +14,7 @@ import {
   createPhotoOnFauna,
   CreatePhotoParams,
 } from "./functions/createPhotoOnFauna";
+import { useGlobalContext } from "../../contexts/GlobalProvider";
 
 interface Props {
   visible: boolean;
@@ -26,6 +25,7 @@ export type FormSchema = z.infer<typeof schemaValidation>;
 
 export const UploadModal = ({ visible, setVisible }: Props) => {
   const queryClient = useQueryClient();
+  const { notification } = useGlobalContext();
   const mutation = useMutation({
     mutationFn: async ({ title, description, url }: CreatePhotoParams) =>
       createPhotoOnFauna({ title, description, url }),
@@ -56,10 +56,16 @@ export const UploadModal = ({ visible, setVisible }: Props) => {
         url,
       });
 
-      toast.success("Foto carregata com sucesso");
+      notification.call({
+        type: "success",
+        content: "Foto carregata com sucesso",
+      });
     } catch (error) {
       console.error(error);
-      toast.error("Erro ao realizar upload, Tente novamente");
+      notification.call({
+        type: "error",
+        content: "Erro ao realizar upload, Tente novamente",
+      });
     } finally {
       setLoad(false);
       setVisible(false);

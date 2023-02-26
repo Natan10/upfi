@@ -1,7 +1,6 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 import { InfiniteData, useInfiniteQuery } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
 
 import { ButtonLoad } from "../components/ButtonLoad";
 import { Header } from "../components/Header";
@@ -52,7 +51,6 @@ const Home: NextPage = () => {
         )}
         <UploadModal visible={visible} setVisible={setVisible} />
       </div>
-      <ReactQueryDevtools position="bottom-right" />
     </div>
   );
 };
